@@ -64,7 +64,7 @@ async function createUser(req, res) {
     };
 };
 
-// Rota para o Login/SignIn do usuário
+// Rota para a SignIn/Entrada do usuário
 async function loginUser(req,res) {
     const { email, password } = req.body;
 
