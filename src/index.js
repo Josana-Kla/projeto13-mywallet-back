@@ -2,6 +2,7 @@ import express from 'express';
 import cors from 'cors';
 
 import { createUser, loginUser, getUsersList } from './controllers/users.controller.js';
+import { addCashIn } from './controllers/transactions.controller.js';
 
 const app = express();
 app.use(cors());
@@ -17,9 +18,7 @@ app.get("/users", getUsersList);
 
 // Rotas das transações:
 // Para adicionar um novo crédito no My Wallet:
-app.post("/cash-in", (req,res) => {
-
-});
+app.post("/cash-in",addCashIn);
 
 // Para adicionar um novo débito no My Wallet:
 app.post("/cash-out", (req,res) => {
