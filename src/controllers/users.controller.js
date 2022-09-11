@@ -83,6 +83,10 @@ async function loginUser(req,res) {
         };
 
         const token = uuidv4();
+        db.collection('sessions').insertOne({
+            token,
+            userId: user._id
+        });
 
         return res.status(200).send({token: token});
 

@@ -2,7 +2,7 @@ import express from 'express';
 import cors from 'cors';
 
 import { createUser, loginUser, getUsersList } from './controllers/users.controller.js';
-import { addCashIn } from './controllers/transactions.controller.js';
+import { addCashIn, getHistoryTransactions } from './controllers/transactions.controller.js';
 
 const app = express();
 app.use(cors());
@@ -26,9 +26,7 @@ app.post("/cash-out", (req,res) => {
 });
 
 // Para listar todas as transações feitas no My Wallet:
-app.get("/history", (req,res) => {
-
-});
+app.get("/history", getHistoryTransactions);
 
 
 app.listen(5000);
