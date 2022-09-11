@@ -1,6 +1,8 @@
 import db from '../database/db.js';
 import joi from 'joi';
 import bcrypt from 'bcrypt';
+import { v4 as uuidv4 } from 'uuid';
+
 
 const usersSchema = joi.object({
     name: joi.string().alphanum().required().empty(''),
@@ -80,7 +82,9 @@ async function loginUser(req,res) {
             return res.sendStatus(401);
         };
 
-        return res.sendStatus(200);
+        const token = uuidv4();
+
+        return res.status(200).send({token: token});
 
     } catch (error) {
         console.log(error);

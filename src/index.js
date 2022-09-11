@@ -10,9 +10,10 @@ app.use(express.json());
 // Rotas do usuário:
 // Rota de SignIn/Entrada do usuário
 app.post("/sign-in", loginUser);
-
 // Rota de SignUp/Cadastro do usuário
 app.post("/sign-up", createUser);
+app.get("/users", getUsersList);
+
 
 // Rotas das transações:
 // Para adicionar um novo crédito no My Wallet:
@@ -30,6 +31,5 @@ app.get("/history", (req,res) => {
 
 });
 
-app.get("/users", getUsersList);
 
 app.listen(5000);
