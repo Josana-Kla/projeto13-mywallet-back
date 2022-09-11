@@ -9,28 +9,95 @@ const usersSchema = joi.object({
     checkPassword: joi.string().alphanum().required().empty('')
 }); 
 
+// Check if user already exists
+async function checkUserExists(email) {
+    try {
+        const userExists = await db.collection('users').findOne({email});
+
+        if(userExists === null) {
+            console.log("Opa! Você é novo por aqui? Se apresente! 😃");
+            return false;
+        } else {
+            console.log("Esse usuário já existe no banco: \n", {name: userExists.name, email: userExists.email});
+            return true;
+        };
+    } catch (error) {
+        console.log(error);
+        console.log("Deu erro no servidor!");
+    }
+};
+
 // Rota de SignUp/Cadastro do usuário
 async function createUser(req, res) {
     const { name, email, password, checkPassword } = req.body;
-    const validation = usersSchema.validate(req.body);
+    const validation = usersSchema.validate(req.body, {abortEarly: false});
 
     if(validation.error) {
         const error = validation.error.details.map(detail => detail.message);
 
-        res.status(422).send(error);
-        return;
+        return res.status(422).send(error);
     };
 
-}
+    if(await checkUserExists(email)) {
+        return res.sendStatus(409);
+    };
 
-async function usersList(req, res) {
+    if(password !== checkPassword) {
+        return res.status(422).send("As senhas não conferem!");
+    };
+
+    const hashPassword = bcrypt.hashSync(password, 10);
+
+    try {
+        await db.collection('users').insertOne({ 
+            name, 
+            email, 
+            password: hashPassword, 
+            lastStatus: Date.now() 
+        });
+        return res.sendStatus(201);
+    } catch(error) {
+        console.log(error);
+        return res.sendStatus(500);
+    };
+};
+
+// Rota para o Login/SignIn do usuário
+async function loginUser(req,res) {
+    const { email, password } = req.body;
+
+    if(!email || !password) {
+        return res.sendStatus(400);
+    };
+
+   
+    try {
+        const user = await db.collection('users').findOne({email});
+        console.log(user);
+        const isValid = bcrypt.compareSync(password, user.password);
+
+        if(!isValid) {
+            return res.sendStatus(401);
+        };
+
+        return res.sendStatus(200);
+
+    } catch (error) {
+        console.log(error);
+        return res.sendStatus(500);
+    };
+};
+
+// Rota para listar os usuários
+async function getUsersList(req, res) {
     try {
         const users = await db.collection('users').find().toArray();
 
         return res.status(200).send(users);
     } catch (error) {
-        return res.status(404).send(error.message);
-    }
-}
+        console.log(error);
+        return res.sendStatus(500);
+    };
+};
 
-export { createUser, usersList }; 
+export { createUser, loginUser, getUsersList }; 

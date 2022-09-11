@@ -1,7 +1,7 @@
 import express from 'express';
 import cors from 'cors';
 
-import { createUser, usersList } from './controllers/users.controller.js';
+import { createUser, loginUser, getUsersList } from './controllers/users.controller.js';
 
 const app = express();
 app.use(cors());
@@ -9,9 +9,7 @@ app.use(express.json());
 
 // Rotas do usuário:
 // Rota de SignIn/Entrada do usuário
-app.post("/sign-in", (req,res) => {
-
-});
+app.post("/sign-in", loginUser);
 
 // Rota de SignUp/Cadastro do usuário
 app.post("/sign-up", createUser);
@@ -32,6 +30,6 @@ app.get("/history", (req,res) => {
 
 });
 
-app.get("/users", usersList);
+app.get("/users", getUsersList);
 
 app.listen(5000);
