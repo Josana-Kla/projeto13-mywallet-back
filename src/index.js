@@ -17,7 +17,7 @@ app.get("/users", getUsersList);
 // Rotas das transações:
 app.post("/cash-in",addCashIn);
 app.post("/cash-out", addCashOut);
-app.get("/history", getHistoryTransactions);
+app.get("/home", getHistoryTransactions);
 
 
 app.listen(5000);

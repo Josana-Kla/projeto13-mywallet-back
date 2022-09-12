@@ -38,7 +38,7 @@ async function addCashIn(req, res) {
             return res.send(401);
         };
 
-        const addCash = await db.collection('userTransactions').insertOne({
+       await db.collection('userTransactions').insertOne({
             value,
             description,
             date: currentDate(),
@@ -46,7 +46,7 @@ async function addCashIn(req, res) {
             userId: user._id
         });
 
-        return res.status(201).send(addCash);
+        return res.sendStatus(201);
     } catch (error) {
         console.log(error);
         return res.status(500).send("Erro ao adicionar seu dinheiro no servidor!");
@@ -80,7 +80,7 @@ async function addCashOut(req, res) {
             return res.send(401);
         };
 
-        const outCash = await db.collection('userTransactions').insertOne({
+        await db.collection('userTransactions').insertOne({
             value,
             description,
             date: currentDate(),
@@ -88,7 +88,7 @@ async function addCashOut(req, res) {
             userId: user._id
         });
 
-        return res.status(201).send(outCash);
+        return res.sendStatus(201);;
     } catch (error) {
         console.log(error);
         return res.status(500).send("Erro no servidor ao adicionar saída de dinheiro!");
@@ -116,7 +116,9 @@ async function getHistoryTransactions(req, res) {
 
         const transactions = await db.collection('userTransactions').find({ userId: user._id }).toArray();
 
-        return res.status(200).send(transactions);
+        const userTransactions = {...transactions, name: user.name};
+
+        return res.status(200).send(userTransactions);
     } catch (error) {
         console.log(error);
         return res.sendStatus(500);

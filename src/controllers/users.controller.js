@@ -3,7 +3,6 @@ import joi from 'joi';
 import bcrypt from 'bcrypt';
 import { v4 as uuidv4 } from 'uuid';
 
-
 const usersSchema = joi.object({
     name: joi.string().alphanum().required().empty(''),
     email: joi.string().email().required().empty(''),
@@ -67,12 +66,16 @@ async function createUser(req, res) {
 // Rota para a SignIn/Entrada do usuário
 async function loginUser(req,res) {
     const { email, password } = req.body;
+    const validUser = await checkUserExists(email);
 
     if(!email || !password) {
         return res.sendStatus(400);
     };
 
-   
+    if(!validUser) {
+        return res.sendStatus(422);
+    };
+
     try {
         const user = await db.collection('users').findOne({email});
         console.log(user);
