@@ -43,7 +43,8 @@ async function addCashIn(req, res) {
             description,
             date: currentDate(),
             type: "cash_in",
-            userId: user._id
+            userId: user._id,
+            name: user.name
         });
 
         return res.sendStatus(201);
@@ -85,7 +86,8 @@ async function addCashOut(req, res) {
             description,
             date: currentDate(),
             type: "cash_out",
-            userId: user._id
+            userId: user._id,
+            name: user.name
         });
 
         return res.sendStatus(201);;
@@ -116,9 +118,7 @@ async function getHistoryTransactions(req, res) {
 
         const transactions = await db.collection('userTransactions').find({ userId: user._id }).toArray();
 
-        const userTransactions = {...transactions, name: user.name};
-
-        return res.status(200).send(userTransactions);
+        return res.status(200).send(transactions);
     } catch (error) {
         console.log(error);
         return res.sendStatus(500);
